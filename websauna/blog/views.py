@@ -12,6 +12,7 @@ from zope.interface import implementer
 
 import markdown
 from markdown.extensions.wikilinks import WikiLinkExtension
+from markdown.extensions.codehilite import CodeHiliteExtension
 from slugify import slugify
 
 # Websauna
@@ -52,7 +53,8 @@ class PostResource(Resource):
 
     def get_body_as_html(self) -> str:
         links = WikiLinkExtension(build_url=self.get_wikilink_url)
-        return markdown.markdown(self.post.body, extensions=[links])
+        hilite = CodeHiliteExtension(linenums=True)
+        return markdown.markdown(self.post.body, extensions=[links, hilite])
 
     def get_heading_class(self) -> str:
         """Visually separate draft posts from published posts when viewing blog roll as admin."""

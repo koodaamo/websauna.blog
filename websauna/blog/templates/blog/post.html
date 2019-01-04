@@ -2,6 +2,11 @@
 
 {% extends "blog/base.html" %}
 
+{% block css %}
+   {% include "site/css.html" %}
+   <link rel="stylesheet" href="{{ 'websauna.blog:static/hilite.css'|static_url }}">
+{% endblock %}
+
 {# Fill in metadata #}
 {% block description %}
 

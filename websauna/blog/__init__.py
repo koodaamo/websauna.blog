@@ -20,6 +20,12 @@ class AddonInitializer:
         self.config.scan(admins)
         self.config.scan(adminviews)
 
+
+    @after(Initializer.configure_static)
+    def configure_static(self):
+        self.config.registry.static_asset_policy.add_static_view('websauna.blog-static', 'websauna.blog:static')
+
+
     @after(Initializer.configure_templates)
     def configure_templates(self):
         """Include our package templates folder in Jinja 2 configuration."""
