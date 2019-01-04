@@ -11,6 +11,8 @@ from pyramid.view import view_config
 from zope.interface import implementer
 
 import markdown
+from markdown.extensions.wikilinks import WikiLinkExtension
+from slugify import slugify
 
 # Websauna
 from websauna.compat.typing import List
@@ -39,8 +41,18 @@ class PostResource(Resource):
     def get_title(self) -> str:
         return self.post.title
 
+    def get_wikilink_url(self, label, base, end):
+        base = self.request.route_url("blog_redirect") + '/'
+
+        # This is a naive implementation that may produce wrong
+        # URL if the label has a slugification conflict with some
+        # other post title, however rare that might be in practice.
+        # See implementation of models.Post.ensure_slug() for details. 
+        return base + slugify(label)
+
     def get_body_as_html(self) -> str:
-        return markdown.markdown(self.post.body)
+        links = WikiLinkExtension(build_url=self.get_wikilink_url)
+        return markdown.markdown(self.post.body, extensions=[links])
 
     def get_heading_class(self) -> str:
         """Visually separate draft posts from published posts when viewing blog roll as admin."""
